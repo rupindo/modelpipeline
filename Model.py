@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import google.auth
@@ -9,50 +9,72 @@ from google.cloud import bigquery
 client = bigquery.Client()
 
 
-# In[2]:
+# In[14]:
 
 
 import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import pickle
 
 
-# In[7]:
+# In[3]:
 
 
 credentials, project_id = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
 
 
-# In[8]:
+# In[4]:
 
 
 bqclient = bigquery.Client(credentials=credentials,project=project_id)
 
 
-# In[9]:
-
-
-credentials
-
-
-# In[10]:
+# In[5]:
 
 
 sql = "SELECT * FROM test_data.test"
 
 
-# In[11]:
+# In[6]:
 
 
 df = bqclient.query(sql)
 
 
-# In[13]:
+# In[7]:
 
 
 df = df.result().to_dataframe()
 
 
-# In[14]:
+# In[9]:
 
 
-print(df)
+x = np.array([5, 15, 25, 35, 45, 55]).reshape((-1, 1))
+y = np.array([5, 20, 14, 32, 22, 38])
+
+
+# In[10]:
+
+
+model = LinearRegression()
+
+
+# In[11]:
+
+
+model.fit(x, y)
+
+
+# In[12]:
+
+
+r_sq = model.score(x, y)
+
+
+# In[ ]:
+
+
+pickle.dump(model, open('model.sav', 'wb'))
 
